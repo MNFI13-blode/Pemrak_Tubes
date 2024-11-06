@@ -14,7 +14,29 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+List<Map<String, dynamic>> entries = [
+  {"namaItem": "Sayur", "warna": Colors.green},
+  {"namaItem": "Buah", "warna": Colors.red},
+  {"namaItem": "Baju", "warna": Colors.blue}
+];
+
+class _HomeScreenState extends State<HomeScreen> {
+  int currentIndex = 0; // Menyimpan indeks halaman aktif
+  final PageController pageController = PageController();
+
+  // Fungsi untuk berpindah halaman
+  void onTabTapped(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+    pageController.jumpToPage(index);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,99 +60,197 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search in thousands of products',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.grey[200],
-                  filled: true,
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CategoryCard(
-                    title: 'Kos 1',
-                    subtitle: 'Bojong santos\njl. wibu',
+                  SizedBox(height: 10),
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search in thousands of products',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                      fillColor: Colors.grey[200],
+                      filled: true,
+                    ),
                   ),
-                  CategoryCard(
-                    title: 'Kos Aril',
-                    subtitle: 'Ciganitri\njl. cosplay',
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CategoryCard(
+                        title: 'Kos 1',
+                        subtitle: 'Bojong santos\njl. wibu',
+                      ),
+                      CategoryCard(
+                        title: 'Kos Aril',
+                        subtitle: 'Ciganitri\njl. cosplay',
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Explore by Category',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CategoryIcon(
+                        title: 'Menulis',
+                        icon: Icons.edit,
+                        color: Colors.pink,
+                      ),
+                      CategoryIcon(
+                        title: 'Menggambar',
+                        icon: Icons.brush,
+                        color: Colors.yellow,
+                      ),
+                      CategoryIcon(
+                        title: 'Alat gambar',
+                        icon: Icons.palette,
+                        color: Colors.purple,
+                      ),
+                      CategoryIcon(
+                        title: 'Merchant',
+                        icon: Icons.store,
+                        color: Colors.blue,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Deals of the Day',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  // Call DiscountCard widget here
+                  DiscountCard(),
+                  SizedBox(height: 10),
+                  // Another Deal Card example
+                  DealCard(
+                    title: 'HQ Mechanic Pencil 2B',
+                    originalPrice: 'Rp. 18.000',
+                    discountedPrice: 'Rp. 12.000',
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              Text(
-                'Explore by Category',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  CategoryIcon(
-                    title: 'Menulis',
-                    icon: Icons.edit,
-                    color: Colors.pink,
-                  ),
-                  CategoryIcon(
-                    title: 'Menggambar',
-                    icon: Icons.brush,
-                    color: Colors.yellow,
-                  ),
-                  CategoryIcon(
-                    title: 'Alat gambar',
-                    icon: Icons.palette,
-                    color: Colors.purple,
-                  ),
-                  CategoryIcon(
-                    title: 'Merchant',
-                    icon: Icons.store,
-                    color: Colors.blue,
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Deals of the Day',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              // Call DiscountCard widget here
-              DiscountCard(),
-              SizedBox(height: 10),
-              // Another Deal Card example
-              DealCard(
-                title: 'HQ Mechanic Pencil 2B',
-                originalPrice: 'Rp. 18.000',
-                discountedPrice: 'Rp. 12.000',
-              ),
-            ],
+            ),
           ),
-        ),
+          Center(child: Text("News Page")),
+          Center(child: Text("Favorites Page")),
+          Center(child: Text("Order Page")),
+        ],
       ),
-      // Use CustomBottomNavBar instead of BottomNavigationBar
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentIndex,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        onTap: onTabTapped,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.store),
+            label: 'Grocery',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'News',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Stack(
+              children: [
+                Icon(Icons.shopping_bag),
+                Positioned(
+                  right: 0,
+                  child: CircleAvatar(
+                    radius: 7,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      '1',
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            label: 'Order',
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Action for cart button
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CartPage()));
         },
-        child: Icon(Icons.shopping_cart),
+        child: Icon(Icons.shopping_cart), //di sini kerjaan Ariel
         backgroundColor: Colors.red,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+}
+
+class CartPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Your Cart"),
+      ),
+      body: Container(
+        child: ListView.builder(
+            itemCount: entries.length,
+            itemBuilder: (BuildContext context, int index) {
+              Color avatarColor = entries[index]['warna'];
+              return Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: avatarColor,
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${entries[index]['namaItem']}',
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 24),
+                              textAlign: TextAlign.left)
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+      ),
     );
   }
 }
