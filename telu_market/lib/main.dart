@@ -503,11 +503,13 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 }
 
-class Merchant extends StatelessWidget {
+class Merchant {
   final String namaMerchant;
   final Icon icon;
 
   Merchant({required this.icon, required this.namaMerchant});
+}
+class MerchantPage extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
@@ -519,7 +521,7 @@ class Merchant extends StatelessWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text("Merchant", style: TextStyle(fontSize: 14),),
+        title: Text("Merchant", style: const TextStyle(fontSize: 14),),
       ),
       body: ListView.builder(
         itemCount: merchant.length,
