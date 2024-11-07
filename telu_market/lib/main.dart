@@ -502,3 +502,34 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 }
+
+class Merchant extends StatelessWidget {
+  final String namaMerchant;
+  final Icon icon;
+
+  Merchant({required this.icon, required this.namaMerchant});
+  
+  @override
+  Widget build(BuildContext context) {
+    final List<Merchant> merchant = [
+      Merchant(icon: const Icon(Icons.store), namaMerchant: "Toko Serba Ada"),
+      Merchant(icon: const Icon(Icons.store), namaMerchant: "Toko Global"),
+      Merchant(icon: const Icon(Icons.store), namaMerchant: "Toko Sukabirus"),
+      Merchant(icon: const Icon(Icons.store), namaMerchant: "Toko Sukapura")
+    ];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Merchant", style: TextStyle(fontSize: 14),),
+      ),
+      body: ListView.builder(
+        itemCount: merchant.length,
+        itemBuilder: (context, index){
+          return ListTile(
+            title: Text(merchant[index].namaMerchant),
+            leading: Icon(merchant[index].icon as IconData?),
+          );
+        },
+      ),
+    );
+  }
+}
