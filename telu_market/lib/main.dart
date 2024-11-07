@@ -54,8 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Text("Buah Batu", style: TextStyle(color: Colors.red)),
             ),
-            CircleAvatar(
-              backgroundImage: NetworkImage("https://via.placeholder.com/150"),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage:
+                    NetworkImage("https://via.placeholder.com/150"),
+              ),
             ),
           ],
         ),
@@ -509,8 +518,8 @@ class Merchant {
 
   Merchant({required this.icon, required this.namaMerchant});
 }
+
 class MerchantPage extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     final List<Merchant> merchant = [
@@ -521,16 +530,200 @@ class MerchantPage extends StatelessWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text("Merchant", style: const TextStyle(fontSize: 14),),
+        title: Text(
+          "Merchant",
+          style: const TextStyle(fontSize: 14),
+        ),
       ),
       body: ListView.builder(
         itemCount: merchant.length,
-        itemBuilder: (context, index){
+        itemBuilder: (context, index) {
           return ListTile(
             title: Text(merchant[index].namaMerchant),
             leading: Icon(merchant[index].icon as IconData?),
           );
         },
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 173, 27, 27),
+      appBar: AppBar(
+        title: Text("Profile", style: const TextStyle(fontSize: 14)),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 120,
+                width: 120,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: const Image(
+                    image: AssetImage('photo/defaultAvatar.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigasi ke halaman EditProfile
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditProfilePage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text("Edit Profile", style: TextStyle(color: Colors.black)),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                margin: const EdgeInsets.symmetric(vertical: 10.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text("Nama:", style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
+                    Text("Johanes"),
+                    Divider(),
+                    Text("Phone:", style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
+                    Text("08123456789"),
+                    Divider(),
+                    Text("Email:", style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 5),
+                    Text("rI0yW@example.com"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EditProfilePage extends StatefulWidget {
+  @override
+  _EditProfilePageState createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  final TextEditingController _nameController = TextEditingController(text: "Johanes");
+  final TextEditingController _phoneController = TextEditingController(text: "08123456789");
+  final TextEditingController _emailController = TextEditingController(text: "rI0yW@example.com");
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 173, 27, 27),
+      appBar: AppBar(
+        title: const Text("Edit Profile"),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 120,
+                width: 120,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: const Image(
+                    image: AssetImage('photo/defaultAvatar.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Membungkus TextField dengan Container
+              Container(
+                color: Colors.white, // Latar belakang container menjadi putih
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: "Nama",
+                    border: InputBorder.none, // Menghapus border default
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: TextField(
+                  controller: _phoneController,
+                  decoration: const InputDecoration(
+                    labelText: "Phone",
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    labelText: "Email",
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Kembali ke halaman ProfilePage
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Simpan perubahan, bisa ditambahkan aksi untuk menyimpan data di backend atau local storage
+                      // Kembali ke halaman ProfilePage setelah save
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Save"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
