@@ -187,3 +187,38 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+hild: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 16),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: avatarColor,
+                            ),
+                            Text('${entries[index]['namaItem']}',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 24),
+                                textAlign: TextAlign.left),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.delete),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+
+
+
+
+
+                  

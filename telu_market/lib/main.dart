@@ -20,9 +20,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 List<Map<String, dynamic>> entries = [
-  {"namaItem": "Sayur", "warna": Colors.green},
-  {"namaItem": "Buah", "warna": Colors.red},
-  {"namaItem": "Baju", "warna": Colors.blue}
+  {
+    "namaItem": "HQ Mechanic Pencil 2B",
+    "harga": "12.000",
+    "warna": Colors.green
+  },
+  {"namaItem": "Fabercastel color", "harga": "12.000", "warna": Colors.red},
+  {
+    "namaItem": "Air Minum Kemasan Sachet",
+    "harga": "12.000",
+    "warna": Colors.blue
+  }
 ];
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -216,7 +224,7 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Your Cart"),
+        title: Text("Keranjang Saya"),
       ),
       body: Container(
         child: ListView.builder(
@@ -227,24 +235,28 @@ class CartPage extends StatelessWidget {
                 elevation: 4,
                 margin: const EdgeInsets.symmetric(vertical: 4),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(25),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CircleAvatar(
                         backgroundColor: avatarColor,
+                        radius: 24,
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${entries[index]['namaItem']}',
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  // fontWeight: FontWeight.bold,
-                                  fontSize: 24),
-                              textAlign: TextAlign.left)
+                          Text(
+                            '${entries[index]['namaItem']}',
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                          Text(
+                            '${entries[index]['harga']}',
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                          )
                         ],
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -509,8 +521,8 @@ class Merchant {
 
   Merchant({required this.icon, required this.namaMerchant});
 }
+
 class MerchantPage extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     final List<Merchant> merchant = [
@@ -521,11 +533,14 @@ class MerchantPage extends StatelessWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: Text("Merchant", style: const TextStyle(fontSize: 14),),
+        title: Text(
+          "Merchant",
+          style: const TextStyle(fontSize: 14),
+        ),
       ),
       body: ListView.builder(
         itemCount: merchant.length,
-        itemBuilder: (context, index){
+        itemBuilder: (context, index) {
           return ListTile(
             title: Text(merchant[index].namaMerchant),
             leading: Icon(merchant[index].icon as IconData?),
