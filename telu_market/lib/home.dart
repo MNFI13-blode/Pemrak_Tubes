@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:telu_market/deskripsi_merchant.dart';
+import 'package:telu_market/deskripsi_produk.dart';
 import 'profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'cart_page.dart';
@@ -67,11 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'Toko Sukabirus',
                     originalPrice: '',
+
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('HQ Mechanic Pencil 2B clicked!')),
-                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> DeskripsiMerchant()));
                     },
                   ),
                   Divider(),
@@ -93,6 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'HQ Mechanic Pencil 2B',
                     originalPrice: 'Rp. 18.000',
+
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> DeskripsiProduk()));
+                    },
                   ),
                 ],
               ),
