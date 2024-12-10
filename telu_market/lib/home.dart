@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currentIndex = 0; // Menyimpan indeks halaman aktif
+  int currentIndex = 0;
   final PageController pageController = PageController();
 
   // Fungsi untuk berpindah halaman
@@ -71,19 +71,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 10),
                   ItemCard(
-                    title: 'Toko Sukabirus',
-                    originalPrice: '',
-                    description: 'Toko ini menjual produk alat tulis',
+                    title: 'HQ Mechanic Pencil 2B',
+                    originalPrice: 'Rp. 18.000',
+                    description:
+                        'Pensil memiliki ketebalan yang pas untuk menulis serta menggambar',
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('HQ Mechanic Pencil 2B clicked!')),
+                      );
+                    },
                   ),
                   ItemCard(
                     title: 'Toko Sukapura',
                     originalPrice: '',
-                    description: 'Toko ini menjual aksesoris laptop untuk mahasiswa dengan harga terjangkau',
+                    description:
+                        'Toko ini menjual aksesoris laptop untuk mahasiswa dengan harga terjangkau',
                   ),
                   ItemCard(
                     title: 'Toko Global',
                     originalPrice: '',
-                    description: 'Toko ini menjual buku-buku dengan harga terjangkau',
+                    description:
+                        'Toko ini menjual buku-buku dengan harga terjangkau',
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -94,7 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'HQ Mechanic Pencil 2B',
                     originalPrice: 'Rp. 18.000',
-                    description: 'Pensil memiliki ketebalan yang pas untuk menulis serta menggambar',
+                    description:
+                        'Pensil memiliki ketebalan yang pas untuk menulis serta menggambar',
                   ),
                 ],
               ),
@@ -176,45 +186,49 @@ class ItemCard extends StatelessWidget {
   final String title;
   final String originalPrice;
   final String? description;
+  final VoidCallback? onTap; // Callback untuk aksi ketika ditekan
 
   ItemCard({
     required this.title,
     required this.originalPrice,
     this.description,
+    this.onTap, // Tambahkan parameter onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.red[100],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 5),
-          Row(
-            children: [
-              Text(
-                originalPrice,
-                style: TextStyle(
-                  color: Colors.black,
+    return GestureDetector(
+      onTap: onTap, // Tangkap aksi ketika widget ditekan
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.red[100],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Text(
+                  originalPrice,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(width: 10),
-            ],
-          ),
-          if (description != null)
-            Text(
-              description!,
-              style: TextStyle(color: Colors.red[800], fontSize: 12),
+                SizedBox(width: 10),
+              ],
             ),
-        ],
+            if (description != null)
+              Text(
+                description!,
+                style: TextStyle(color: Colors.red[800], fontSize: 12),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
-
