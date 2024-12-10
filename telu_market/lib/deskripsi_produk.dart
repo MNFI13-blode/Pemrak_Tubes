@@ -11,9 +11,15 @@ class DeskripsiProduk extends StatelessWidget{
         child: Column(
           children: [
             Text('HQ Mechanic Pencil 2B'),
-            Text('Pensil memiliki ketebalan yang pas untuk menulis serta menggambar')
+            Text('Pensil memiliki ketebalan yang pas untuk menulis serta menggambar'),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          
+        }, 
+        child: Text('Add to cart'),
       ),
     );
   }
