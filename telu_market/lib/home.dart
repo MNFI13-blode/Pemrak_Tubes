@@ -71,10 +71,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 10),
                   ItemCard(
+
+                    title: 'Toko Sukabirus',
+                    originalPrice: '',
+
                     title: 'HQ Mechanic Pencil 2B',
-                    originalPrice: 'Rp. 18.000',
-                    description:
-                        'Pensil memiliki ketebalan yang pas untuk menulis serta menggambar',
+                    originalPrice: 'Rp. 18.000'
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -82,17 +84,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   ),
+                  Divider(),
                   ItemCard(
                     title: 'Toko Sukapura',
                     originalPrice: '',
-                    description:
-                        'Toko ini menjual aksesoris laptop untuk mahasiswa dengan harga terjangkau',
                   ),
+                  Divider(),
                   ItemCard(
                     title: 'Toko Global',
                     originalPrice: '',
-                    description:
-                        'Toko ini menjual buku-buku dengan harga terjangkau',
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -103,8 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'HQ Mechanic Pencil 2B',
                     originalPrice: 'Rp. 18.000',
-                    description:
-                        'Pensil memiliki ketebalan yang pas untuk menulis serta menggambar',
                   ),
                 ],
               ),
