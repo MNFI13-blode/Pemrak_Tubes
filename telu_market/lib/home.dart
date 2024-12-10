@@ -72,8 +72,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: 10),
                   ItemCard(
                     title: 'Toko Sukabirus',
-                    originalPrice: '-',
+                    originalPrice: '',
                     description: 'Toko ini menjual produk alat tulis',
+                  ),
+                  ItemCard(
+                    title: 'Toko Sukapura',
+                    originalPrice: '',
+                    description: 'Toko ini menjual aksesoris laptop untuk mahasiswa dengan harga terjangkau',
+                  ),
+                  ItemCard(
+                    title: 'Toko Global',
+                    originalPrice: '',
+                    description: 'Toko ini menjual buku-buku dengan harga terjangkau',
                   ),
                   SizedBox(height: 20),
                   Text(
