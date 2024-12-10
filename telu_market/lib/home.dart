@@ -71,8 +71,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 10),
                   ItemCard(
-                    title: 'HQ Mechanic Pencil 2B',
-                    originalPrice: 'Rp. 18.000',
+                    title: 'Toko Sukabirus',
+                    originalPrice: '',
+                    description: 'Toko ini menjual produk alat tulis',
+                  ),
+                  ItemCard(
+                    title: 'Toko Sukapura',
+                    originalPrice: '',
+                    description: 'Toko ini menjual aksesoris laptop untuk mahasiswa dengan harga terjangkau',
+                  ),
+                  ItemCard(
+                    title: 'Toko Global',
+                    originalPrice: '',
+                    description: 'Toko ini menjual buku-buku dengan harga terjangkau',
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -83,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'HQ Mechanic Pencil 2B',
                     originalPrice: 'Rp. 18.000',
+                    description: 'Pensil memiliki ketebalan yang pas untuk menulis serta menggambar',
                   ),
                 ],
               ),
