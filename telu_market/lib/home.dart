@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Center(child: Text("News Page")),
           Center(child: Text("Favorites Page")),
-          Center(child: Text("Order Page")),
+          
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
