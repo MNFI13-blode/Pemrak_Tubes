@@ -5,12 +5,6 @@ import 'profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'cart_page.dart';
 
-List<Map<String, dynamic>> entries = [
-  {"namaItem": "Sayur", "warna": Colors.green},
-  {"namaItem": "Buah", "warna": Colors.red},
-  {"namaItem": "Baju", "warna": Colors.blue}
-];
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -73,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 10),
                   ItemCard(
-
                     title: 'Toko Sukabirus',
                     originalPrice: '',
 
