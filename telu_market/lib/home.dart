@@ -74,10 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: 'Toko Sukabirus',
                     originalPrice: '',
                   ),
+                  Divider(),
                   ItemCard(
                     title: 'Toko Sukapura',
                     originalPrice: '',
                   ),
+                  Divider(),
                   ItemCard(
                     title: 'Toko Global',
                     originalPrice: '',
