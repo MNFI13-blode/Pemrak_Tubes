@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currentIndex = 0; // Menyimpan indeks halaman aktif
+  int currentIndex = 0;
   final PageController pageController = PageController();
 
   // Fungsi untuk berpindah halaman
@@ -71,8 +71,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: 10),
                   ItemCard(
+
                     title: 'Toko Sukabirus',
                     originalPrice: '',
+
+                    title: 'HQ Mechanic Pencil 2B',
+                    originalPrice: 'Rp. 18.000'
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('HQ Mechanic Pencil 2B clicked!')),
+                      );
+                    },
                   ),
                   Divider(),
                   ItemCard(
@@ -99,7 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Center(child: Text("News Page")),
-          Center(child: Text("Favorites Page")),
           Center(child: Text("Order Page")),
         ],
       ),
@@ -113,8 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onTabTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.store),
-            label: 'Grocery',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
@@ -175,93 +184,48 @@ class ItemCard extends StatelessWidget {
   final String title;
   final String originalPrice;
   final String? description;
+  final VoidCallback? onTap; // Callback untuk aksi ketika ditekan
 
   ItemCard({
     required this.title,
     required this.originalPrice,
     this.description,
+    this.onTap, // Tambahkan parameter onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.red[100],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 5),
-          Row(
-            children: [
-              Text(
-                originalPrice,
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(width: 10),
-            ],
-          ),
-          if (description != null)
-            Text(
-              description!,
-              style: TextStyle(color: Colors.red[800], fontSize: 12),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomBottomNavBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BottomAppBar(
-      shape: CircularNotchedRectangle(),
-      notchMargin: 8,
-      child: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.store),
-            label: 'Grocery',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Stack(
+    return GestureDetector(
+      onTap: onTap, // Tangkap aksi ketika widget ditekan
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.red[100],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            Row(
               children: [
-                Icon(Icons.shopping_bag),
-                Positioned(
-                  right: 0,
-                  child: CircleAvatar(
-                    radius: 7,
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      '1',
-                      style: TextStyle(color: Colors.white, fontSize: 10),
-                    ),
+                Text(
+                  originalPrice,
+                  style: TextStyle(
+                    color: Colors.black,
                   ),
                 ),
+                SizedBox(width: 10),
               ],
             ),
-            label: 'Order',
-          ),
-        ],
+            if (description != null)
+              Text(
+                description!,
+                style: TextStyle(color: Colors.red[800], fontSize: 12),
+              ),
+          ],
+        ),
       ),
     );
   }

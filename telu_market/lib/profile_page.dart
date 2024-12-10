@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -87,9 +89,22 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController _nameController = TextEditingController(text: "Johanes");
-  final TextEditingController _phoneController = TextEditingController(text: "08123456789");
-  final TextEditingController _emailController = TextEditingController(text: "rI0yW@example.com");
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  File? _imageFile;
+
+  // Fungsi untuk memilih gambar dari kamera atau galeri
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,18 +118,66 @@ class _EditProfilePageState extends State<EditProfilePage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+              // Gambar Profil dengan Tombol Edit
               SizedBox(
                 height: 120,
                 width: 120,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: const Image(
-                    image: AssetImage('assets/photo/defaultAvatar.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: _imageFile != null
+                          ? Image.file(
+                              _imageFile!,
+                              fit: BoxFit.cover,
+                              width: 120,
+                              height: 120,
+                            )
+                          : const Image(
+                              image: AssetImage('assets/photo/defaultAvatar.jpg'),
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.camera_alt, color: Colors.white),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (_) => SafeArea(
+                              child: Wrap(
+                                children: [
+                                  ListTile(
+                                    leading: const Icon(Icons.camera),
+                                    title: const Text("Take a photo"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      _pickImage(ImageSource.camera);
+                                    },
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.photo_library),
+                                    title: const Text("Choose from gallery"),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      _pickImage(ImageSource.gallery);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Text Field Nama
               Container(
                 color: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -127,6 +190,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Text Field Phone
               Container(
                 color: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -139,6 +204,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // Text Field Email
               Container(
                 color: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -151,6 +218,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Tombol Save dan Cancel
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -162,6 +231,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      // Aksi simpan data
                       Navigator.pop(context);
                     },
                     child: const Text("Save"),
