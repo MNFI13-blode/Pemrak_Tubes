@@ -89,8 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Center(child: Text("News Page")),
-          Center(child: Text("Favorites Page")),
-          
+          Center(child: Text("Order Page")),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -103,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onTabTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.store),
-            label: 'Grocery',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
