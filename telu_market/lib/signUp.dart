@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
+import 'authservice/authService.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -8,17 +10,23 @@ class Signup extends StatefulWidget {
 }
 
 class _SignUpState extends State<Signup> {
-  final username = TextEditingController();
-  final password = TextEditingController();
-  final confirmPassword = TextEditingController();
+  final username1 = TextEditingController();
+  final password1 = TextEditingController();
+  final confirmPassword1 = TextEditingController();
+  final email1 = TextEditingController();
+  final alamat1 = TextEditingController();
 
   final FocusNode userNameFocus = FocusNode();
   final FocusNode userPasswordFocus = FocusNode();
   final FocusNode userCPasswordFocus = FocusNode();
+  final FocusNode userEmail = FocusNode();
+  final FocusNode userAlamat = FocusNode();
 
+  Color emailColor =Colors.grey.withOpacity(0.2);
   Color usernameColor = Colors.grey.withOpacity(0.2);
   Color passwordColor = Colors.grey.withOpacity(0.2);
   Color passwordColorC = Colors.grey.withOpacity(0.2);
+  Color alamatColor = Colors.grey.withOpacity(0.2);
   Color buttonColor = const Color.fromARGB(255, 207, 59, 48);
 
   bool isVisible = false;
@@ -49,12 +57,46 @@ class _SignUpState extends State<Signup> {
             : Colors.grey.withOpacity(0.2);
       });
     });
+    userEmail.addListener((){
+          setState(() {
+        emailColor = userEmail.hasFocus
+            ? const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)
+            : Colors.grey.withOpacity(0.2);
+      });
+    });
+      userAlamat.addListener((){
+          setState(() {
+        alamatColor = userAlamat.hasFocus
+            ? const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)
+            : Colors.grey.withOpacity(0.2);
+      });
+    });
   }
+
+  final Authservice authservice = Authservice();
+
+  //fungsi register pembeli
+  Future<void> registerPembelid() async{
+    final username = username1.text;
+    final email = email1.text;
+    final password = password1.text;
+    final alamat = alamat1.text;
+
+    final response = await authservice.registerPembeli(username, email, password, alamat);
+
+    if (response['status'] == 'success') {
+      print("Register berhasil");
+    } else {
+      print("Register gagal: ${response['message']}");
+    }
+
+  }
+
 
   @override
   void dispose() {
-    username.dispose();
-    password.dispose();
+    username1.dispose();
+    password1.dispose();
     userNameFocus.dispose();
     userPasswordFocus.dispose();
     super.dispose();
@@ -89,7 +131,7 @@ class _SignUpState extends State<Signup> {
                     ),
                     child: TextFormField(
                       focusNode: userNameFocus,
-                      controller: username,
+                      controller: username1,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "username is required";
@@ -100,6 +142,60 @@ class _SignUpState extends State<Signup> {
                         icon: Icon(Icons.person),
                         border: InputBorder.none,
                         hintText: "Username",
+                      ),
+                    )),
+                    //===
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    margin: const EdgeInsets.all(8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: emailColor,
+                      // color: const Color.fromARGB(255, 207, 59, 48).withOpacity(.2)
+                    ),
+                    child: TextFormField(
+                      focusNode: userEmail,
+                      controller: email1,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Email is required";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.email),
+                        border: InputBorder.none,
+                        hintText: "Email",
+                      ),
+                    )),
+                    //==alamat
+                    AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    margin: const EdgeInsets.all(8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: alamatColor,
+                      // color: const Color.fromARGB(255, 207, 59, 48).withOpacity(.2)
+                    ),
+                    child: TextFormField(
+                      focusNode: userAlamat,
+                      controller: alamat1,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Alamat is required";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        icon: Icon(Icons.house),
+                        border: InputBorder.none,
+                        hintText: "Alamat",
                       ),
                     )),
                 AnimatedContainer(
@@ -115,7 +211,7 @@ class _SignUpState extends State<Signup> {
                   ),
                   child: TextFormField(
                     focusNode: userPasswordFocus,
-                    controller: password,
+                    controller: password1,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "password is required";
@@ -153,7 +249,7 @@ class _SignUpState extends State<Signup> {
                   ),
                   child: TextFormField(
                     focusNode: userCPasswordFocus,
-                    controller: confirmPassword,
+                    controller: confirmPassword1,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "password is required";
@@ -207,7 +303,7 @@ class _SignUpState extends State<Signup> {
                               color: color ?? buttonColor,
                             ),
                             child: TextButton(
-                              onPressed: () {},
+                              onPressed: registerPembelid,
                               child: const Text(
                                 "LOGIN",
                                 style: TextStyle(color: Colors.white),
@@ -240,7 +336,7 @@ class _SignUpState extends State<Signup> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const Signup(),
+                                builder: (context) => const LoginScreen(),
                               ));
                         },
                         child: const Text(

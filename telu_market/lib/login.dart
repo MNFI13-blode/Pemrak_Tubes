@@ -57,8 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   //Before we show the image, after we copied the image we need to define the location in pubspec.yaml
                   Image.asset(
-                    "lib/assets/login.png",
-                    width: 210,
+                      "lib/assets/login.png",
+                      width: 210,
                   ),
                   const SizedBox(height: 15),
                   Container(
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple.withOpacity(.2)),
+                        color: const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)),
                     child: TextFormField(
                       controller: username,
                       validator: (value) {
@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple.withOpacity(.2)),
+                        color: const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)),
                     child: TextFormField(
                       controller: password,
                       validator: (value) {
@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: MediaQuery.of(context).size.width * .9,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.deepPurple),
+                        color: Color.fromARGB(255, 207, 59, 48)),
                     child: TextButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
