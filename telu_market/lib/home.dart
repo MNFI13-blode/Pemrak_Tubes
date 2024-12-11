@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:telu_market/deskripsi_merchant.dart';
+import 'package:telu_market/deskripsi_produk.dart';
 import 'profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'cart_page.dart';
-
-List<Map<String, dynamic>> entries = [
-  {"namaItem": "Sayur", "warna": Colors.green},
-  {"namaItem": "Buah", "warna": Colors.red},
-  {"namaItem": "Baju", "warna": Colors.blue}
-];
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -15,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currentIndex = 0; // Menyimpan indeks halaman aktif
+  int currentIndex = 0;
   final PageController pageController = PageController();
 
   // Fungsi untuk berpindah halaman
@@ -73,17 +69,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'Toko Sukabirus',
                     originalPrice: '',
-                    description: 'Toko ini menjual produk alat tulis',
+
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> DeskripsiMerchant()));
+                    },
                   ),
+                  Divider(),
                   ItemCard(
                     title: 'Toko Sukapura',
                     originalPrice: '',
-                    description: 'Toko ini menjual aksesoris laptop untuk mahasiswa dengan harga terjangkau',
                   ),
+                  Divider(),
                   ItemCard(
                     title: 'Toko Global',
                     originalPrice: '',
-                    description: 'Toko ini menjual buku-buku dengan harga terjangkau',
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -94,7 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'HQ Mechanic Pencil 2B',
                     originalPrice: 'Rp. 18.000',
-                    description: 'Pensil memiliki ketebalan yang pas untuk menulis serta menggambar',
+
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> DeskripsiProduk()));
+                    },
                   ),
                 ],
               ),
@@ -176,45 +178,49 @@ class ItemCard extends StatelessWidget {
   final String title;
   final String originalPrice;
   final String? description;
+  final VoidCallback? onTap; // Callback untuk aksi ketika ditekan
 
   ItemCard({
     required this.title,
     required this.originalPrice,
     this.description,
+    this.onTap, // Tambahkan parameter onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.red[100],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 5),
-          Row(
-            children: [
-              Text(
-                originalPrice,
-                style: TextStyle(
-                  color: Colors.black,
+    return GestureDetector(
+      onTap: onTap, // Tangkap aksi ketika widget ditekan
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.red[100],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Text(
+                  originalPrice,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(width: 10),
-            ],
-          ),
-          if (description != null)
-            Text(
-              description!,
-              style: TextStyle(color: Colors.red[800], fontSize: 12),
+                SizedBox(width: 10),
+              ],
             ),
-        ],
+            if (description != null)
+              Text(
+                description!,
+                style: TextStyle(color: Colors.red[800], fontSize: 12),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
-
