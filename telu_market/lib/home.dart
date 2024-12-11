@@ -13,6 +13,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
   final PageController pageController = PageController();
+  final List<Map<String, String>> items = [
+    {'title': 'HQ Mechanic Pencil 2B', 'price': 'Rp. 18.000'},
+  ];
 
   // Fungsi untuk berpindah halaman
   void onTabTapped(int index) {
@@ -69,9 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'Toko Sukabirus',
                     originalPrice: '',
-
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> DeskripsiMerchant()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DeskripsiMerchant()));
                     },
                   ),
                   Divider(),
@@ -85,19 +90,110 @@ class _HomeScreenState extends State<HomeScreen> {
                     originalPrice: '',
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    'Item Card',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Item Card',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add_circle, color: Colors.orange),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              String? itemName;
+                              String? itemPrice;
+
+                              return AlertDialog(
+                                title: Text('Add Item'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      decoration: InputDecoration(
+                                          hintText: 'Item Name'),
+                                      onChanged: (value) {
+                                        itemName = value;
+                                      },
+                                    ),
+                                    TextField(
+                                      decoration: InputDecoration(
+                                          hintText: 'Item Price'),
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (value) {
+                                        itemPrice = value;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      if (itemName != null &&
+                                          itemPrice != null) {
+                                        setState(() {
+                                          items.add({
+                                            'title': itemName!,
+                                            'price': itemPrice!
+                                          });
+                                        });
+                                      }
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Add'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   SizedBox(height: 10),
-                  ItemCard(
-                    title: 'HQ Mechanic Pencil 2B',
-                    originalPrice: 'Rp. 18.000',
-
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> DeskripsiProduk()));
-                    },
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return Column(
+                          children: [
+                            ItemCard(
+                              title: item['title']!,
+                              originalPrice: item['price']!,
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DeskripsiProduk()));
+                              },
+                            ),
+                            Divider(),
+                          ],
+                        );
+                      },
+                    ),
                   ),
+                  // ItemCard(
+                  //   title: 'HQ Mechanic Pencil 2B',
+                  //   originalPrice: 'Rp. 18.000',
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => DeskripsiProduk()));
+                  //   },
+                  // ),
                 ],
               ),
             ),
