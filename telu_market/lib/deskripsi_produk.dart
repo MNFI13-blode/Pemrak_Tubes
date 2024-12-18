@@ -5,27 +5,32 @@ class DeskripsiProduk extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Deskripsi Produk'),
+        title: Text(
+          'Deskripsi Produk',
+          style: TextStyle(
+            fontSize: 25,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/pensil mekanik.jpeg',
+              'lib/assets/pensil mekanik.jpeg',
               width: double.infinity,
               height: 150,
               fit: BoxFit.cover,
             ),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'Toko Sukapura',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 17,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -34,23 +39,24 @@ class DeskripsiProduk extends StatelessWidget{
                   Text(
                     'HQ Pencil Mechanic 2B',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 17,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 8),
 
                   Text(
-                    'Pensil dengan pena yang nyaman dan mudah digunakan serta harga terjangkau, cocok untuk menulis dan menggambar',
+                    'Pensil dengan pena yang nyaman dan mudah digunakan serta harga terjangkau, cocok untuk menulis dan menggambar. '
+                    'Selain itu juga pensil mekanik ini mempunyai desain yang amat nyaman digenggam tangan oleh mahasiswa. ',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 16,
                       color: Colors.grey.shade700,
                     ),
                   ),
                   SizedBox(height: 16),
 
                   Center(
-                    child: ElevatedButton.icon(
+                    child: FilledButton.icon(
                       onPressed: (){
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Produk ditambahkan ke keranjang')),
