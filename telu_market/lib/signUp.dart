@@ -22,7 +22,7 @@ class _SignUpState extends State<Signup> {
   final FocusNode userEmail = FocusNode();
   final FocusNode userAlamat = FocusNode();
 
-  Color emailColor =Colors.grey.withOpacity(0.2);
+  Color emailColor = Colors.grey.withOpacity(0.2);
   Color usernameColor = Colors.grey.withOpacity(0.2);
   Color passwordColor = Colors.grey.withOpacity(0.2);
   Color passwordColorC = Colors.grey.withOpacity(0.2);
@@ -57,15 +57,15 @@ class _SignUpState extends State<Signup> {
             : Colors.grey.withOpacity(0.2);
       });
     });
-    userEmail.addListener((){
-          setState(() {
+    userEmail.addListener(() {
+      setState(() {
         emailColor = userEmail.hasFocus
             ? const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)
             : Colors.grey.withOpacity(0.2);
       });
     });
-      userAlamat.addListener((){
-          setState(() {
+    userAlamat.addListener(() {
+      setState(() {
         alamatColor = userAlamat.hasFocus
             ? const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)
             : Colors.grey.withOpacity(0.2);
@@ -76,22 +76,49 @@ class _SignUpState extends State<Signup> {
   final Authservice authservice = Authservice();
 
   //fungsi register pembeli
-  Future<void> registerPembelid() async{
+  Future<void> registerPembelid() async {
     final username = username1.text;
     final email = email1.text;
     final password = password1.text;
     final alamat = alamat1.text;
+    final confirmPassword = confirmPassword1.text;
 
-    final response = await authservice.registerPembeli(username, email, password, alamat);
-
-    if (response['status'] == 'success') {
-      print("Register berhasil");
-    } else {
-      print("Register gagal: ${response['message']}");
+    if (username.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        alamat.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Semua kolom harus diisi")),
+      );
+      return;
     }
 
-  }
+       if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password tidak cocok")),
+      );
+      return;
+    }
 
+    
+    final response =
+        await authservice.registerPembeli(username, email, alamat, password);
+
+    if (response['status'] == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Register Berhasil")),
+      );
+    Future.delayed(const Duration(seconds: 2),(){
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    });
+    } else {
+      // print("Register gagal: ${response['message']}");
+        ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Terjadi Kesalahan")),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -101,7 +128,7 @@ class _SignUpState extends State<Signup> {
     userPasswordFocus.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,8 +171,8 @@ class _SignUpState extends State<Signup> {
                         hintText: "Username",
                       ),
                     )),
-                    //===
-                  AnimatedContainer(
+                //===
+                AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                     margin: const EdgeInsets.all(8),
@@ -171,8 +198,8 @@ class _SignUpState extends State<Signup> {
                         hintText: "Email",
                       ),
                     )),
-                    //==alamat
-                    AnimatedContainer(
+                //==alamat
+                AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                     margin: const EdgeInsets.all(8),
@@ -305,7 +332,7 @@ class _SignUpState extends State<Signup> {
                             child: TextButton(
                               onPressed: registerPembelid,
                               child: const Text(
-                                "LOGIN",
+                                "Daftar",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

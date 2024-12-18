@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signUp.dart';
 import 'home.dart';
+import './authservice/authService.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,9 +14,9 @@ class _LoginScreenState extends State<LoginScreen> {
   //We need two text editing controller
 
   //TextEditing controller to control the text when we enter into it
-  final username = TextEditingController();
-  final password = TextEditingController();
-
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
+  final Authservice authservice = Authservice();
   //A bool variable for show and hide password
   bool isVisible = false;
 
@@ -39,6 +40,35 @@ class _LoginScreenState extends State<LoginScreen> {
   //   }
   // }
 
+  Future<void> loginPembeli() async {
+    final username1 = username.text;
+    final password1 = password.text;
+
+    if (username1.isEmpty && password1.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Semua kolom wajib di isi')));
+    }
+    final response = await authservice.loginPembeli(username1, password1);
+    if (response['status'] == 'success login') {
+      String token = response['token'];
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Login berhasil')));
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ));
+      });
+      print("Login berhasil, token: $token");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Terjadi Kesalahan")),
+      );
+      print("Login gagal: ${response['message']}");
+    }
+  }
+
   //We have to create global key for our form
   final formKey = GlobalKey<FormState>();
   @override
@@ -57,8 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   //Before we show the image, after we copied the image we need to define the location in pubspec.yaml
                   Image.asset(
-                      "lib/assets/login.png",
-                      width: 210,
+                    "lib/assets/login.png",
+                    width: 210,
                   ),
                   const SizedBox(height: 15),
                   Container(
@@ -67,7 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)),
+                        color: const Color.fromARGB(255, 197, 57, 47)
+                            .withOpacity(0.2)),
                     child: TextFormField(
                       controller: username,
                       validator: (value) {
@@ -91,7 +122,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: const Color.fromARGB(255, 197, 57, 47).withOpacity(0.2)),
+                        color: const Color.fromARGB(255, 197, 57, 47)
+                            .withOpacity(0.2)),
                     child: TextFormField(
                       controller: password,
                       validator: (value) {
@@ -128,19 +160,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8),
                         color: Color.fromARGB(255, 207, 59, 48)),
                     child: TextButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            //Login method will be here
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomeScreen()), // Ganti dengan HomeScreen
-                            );
-                            //Now we have a response from our sqlite method
-                            //We are going to create a user
-                          }
-                        },
+                        onPressed: loginPembeli,
+                        //() {
+                          // if (formKey.currentState!.validate()) {
+                          //   //Login method will be here
+                          //   loginPembeli();
+                          //   // Navigator.pushReplacement(
+                          //   //   context,
+                          //   //   MaterialPageRoute(
+                          //   //       builder: (context) =>
+                          //   //           HomeScreen()), // Ganti dengan HomeScreen
+                          //   // );
+                          //   //Now we have a response from our sqlite method
+                          //   //We are going to create a user
+                          // }
+                        // },
                         child: const Text(
                           "LOGIN",
                           style: TextStyle(color: Colors.white),
