@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'authservice/authService.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -34,6 +36,7 @@ class _SignUpState extends State<Signup> {
   @override
   void initState() {
     super.initState();
+    checkLoginStatus();
     userNameFocus.addListener(() {
       setState(() {
         usernameColor = userNameFocus.hasFocus
@@ -120,6 +123,17 @@ class _SignUpState extends State<Signup> {
     }
   }
 
+    void checkLoginStatus() async{
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if(token != null){
+      Navigator.pushReplacement(
+        context, 
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+    }
+  }
   @override
   void dispose() {
     username1.dispose();

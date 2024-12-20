@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'signUp.dart';
 import 'home.dart';
 import './authservice/authService.dart';
@@ -22,6 +23,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //Here is our bool variable
   bool isLoginTrue = false;
+
+  @override
+  void initState(){
+     super.initState();
+    checkLoginStatus();
+  }
+
+  void checkLoginStatus() async{
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if(token != null){
+      Navigator.pushReplacement(
+        context, 
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+    }
+  }
 
   //Now we should call this function in login button
   // login() async {

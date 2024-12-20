@@ -65,4 +65,39 @@ Future<void> saveUserData(Map<String, dynamic> data) async {
   await prefs.setString('userData', jsonData);
   print('Data Pembeli disimpan: $jsonData');
 }
+
+Future<Map<String, dynamic>> updateProfile(int id_pembeli, String username, String alamat, String email)async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+
+  if(token == null){
+    throw Exception('User not authenticated');
+  }
+
+  final url = Uri.parse('$apiUrl/pembeli/update-profile');
+  final requestBody = {
+    'id_pembeli' :id_pembeli,
+    'username' : username,
+    'alamat' : alamat,
+    'email' : email,
+  };
+
+  final response = await http.put(url,
+  headers: {
+    'Content-Type': 'application/json',},
+    body:  jsonEncode(requestBody),
+  );
+
+  if(response.statusCode == 200){
+    final updatedData = jsonDecode(response.body);
+
+      await prefs.setString('userData', jsonEncode(updatedData['data']));
+       print('Profile updated successfully');
+       return json.decode(response.body); 
+       
+  }else{
+       
+       return {'status': 'error', 'message': 'Gagal update profile'};
+  }
+}
 }
