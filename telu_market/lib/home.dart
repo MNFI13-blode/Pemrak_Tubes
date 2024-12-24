@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:telu_market/deskripsi_merchant.dart';
 import 'package:telu_market/deskripsi_produk.dart';
 import 'profile_page.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'cart_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,33 +16,45 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Map<String, String>> items = [
     {'title': 'HQ Mechanic Pencil 2B', 'price': 'Rp. 18.000'},
   ];
-
-  // Fungsi untuk berpindah halaman
-  void onTabTapped(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-    pageController.jumpToPage(index);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100), // Tinggi custom untuk AppBar
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          automaticallyImplyLeading: false, // Tidak menampilkan tombol back
+          flexibleSpace: Padding(
+            padding: const EdgeInsets.only(
+                top: 10, left: 16), // Padding atas dan kiri
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Welcome Back,',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  'User',
+                  style: TextStyle(
+                    fontSize: 32, // Ukuran teks untuk User
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
+
       body: PageView(
-        controller: pageController,
-        onPageChanged: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
         children: [
           Center(
             child: Padding(
@@ -198,74 +210,68 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          Center(child: Text("News Page")),
-          Center(child: Text("Order Page")),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
         selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: Colors.black,
         showSelectedLabels: true,
         showUnselectedLabels: true,
-        onTap: onTabTapped,
+        onTap: (int index) {
+          setState(() {
+            currentIndex = index; // Update indeks saat item di-tap
+          });
+
+          // Aksi berdasarkan indeks
+          switch (index) {
+            case 0:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()));
+              break;
+            case 1:
+              print("Navigasi ke Order");
+              break;
+            case 2:
+              print("Navigasi ke Receipt");
+              break;
+            case 3:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()));
+              break;
+          }
+        },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Iconsax.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Stack(
-              children: [
-                Icon(Icons.shopping_bag),
-                Positioned(
-                  right: 0,
-                  child: CircleAvatar(
-                    radius: 7,
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      '1',
-                      style: TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            icon: Icon(Iconsax.shopping_cart),
             label: 'Order',
           ),
           BottomNavigationBarItem(
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
-              child: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(
-                    "https://via.placeholder.com/150"),
-              ),
-            ),
-            label: 'Profile', // Label for the new icon
+            icon: Icon(Iconsax.receipt_2),
+            label: 'Receipt',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Iconsax.user),
+            label: 'Profile',
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartPage()),
-          );
-        },
-        child: Icon(Icons.shopping_cart),
-        backgroundColor: Colors.red,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => CartPage()),
+      //     );
+      //   },
+      //   child: Icon(Icons.shopping_cart),
+      //   backgroundColor: Colors.red,
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
