@@ -95,11 +95,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   ItemCard(
                     title: 'Toko Sukapura',
                     originalPrice: '',
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DeskripsiMerchant())
+                      );
+                    },
                   ),
                   Divider(),
                   ItemCard(
                     title: 'Toko Global',
                     originalPrice: '',
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DeskripsiMerchant())
+                      );
+                    },
                   ),
                   SizedBox(height: 20),
                   Row(
