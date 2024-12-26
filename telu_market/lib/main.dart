@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telu_market/home.dart';
-import 'login.dart';
+import 'home.dart';
 
 void main() {
   runApp(MyApp());

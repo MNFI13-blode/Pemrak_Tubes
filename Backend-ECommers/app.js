@@ -17,8 +17,8 @@ app.use(
 
 app.use("/api/pembeli", pembeliRoutes);
 
-// (async () => {
-//   try {
+//(async () => {
+//  try {
 //     await sequelize.sync({ force: true }); // `force: true` akan membuat ulang tabel
 //     console.log("Database synchronized!");
 //   } catch (err) {

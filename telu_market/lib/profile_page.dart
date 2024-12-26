@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'authservice/authService.dart';
 import 'home.dart';
+import 'login.dart'; // Ganti dengan path halaman login Anda
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -25,6 +25,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<Map<String, dynamic>?> fetchUserData() async {
     final userData = await getUserData();
     return userData;
+    //return {
+    //'username': 'Andy',
+    //'alamat': 'Bandung',
+    //'email': 'andy@example.com',
+    //'id_pembeli': 12345,
+  //};
   }
 
   @override
@@ -40,115 +46,142 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text("Profiles", style: TextStyle(fontSize: 14)),
         leading: IconButton(
-           icon: const Icon(Icons.arrow_back),
-          onPressed: (){
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
             Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()), // Ganti HomeScreen dengan halaman home Anda
-      );
-          }
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
         ),
-         
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
-          future: fetchUserData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else if (!snapshot.hasData || snapshot.data == null) {
-              return const Center(
-                child: Text('No profile data available'),
-              );
-            }
-
-            final userData = snapshot.data!;
-            return SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 120,
-                      width: 120,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: const Image(
-                          image: AssetImage('assets/photo/defaultAvatar.jpg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditProfilePage()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text("Edit Profile",
-                          style: TextStyle(color: Colors.black)),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      margin: const EdgeInsets.symmetric(vertical: 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Nama:",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 5),
-                          Text(userData['username'] ?? '_'),
-                          const Divider(),
-                          const Text("Alamat:",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 5),
-                          Text(userData['alamat'] ?? '_'),
-                          const Divider(),
-                          const Text("Email:",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 5),
-                          Text(userData['email'] ?? '_'),
-                          const Divider(),
-                          const Text("ID:",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 5),
-                          Text(userData['id_pembeli']?.toString() ?? '_'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+        future: fetchUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          }),
-      
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(
+              child: Text('No profile data available'),
+            );
+          }
+
+          final userData = snapshot.data!;
+          return SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 120,
+                    width: 120,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: const Image(
+                        image: AssetImage('assets/photo/defaultAvatar.jpg'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfilePage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: const Text("Edit Profile",
+                        style: TextStyle(color: Colors.black)),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.symmetric(vertical: 10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Nama:",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 5),
+                        Text(userData['username'] ?? '_'),
+                        const Divider(),
+                        const Text("Alamat:",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 5),
+                        Text(userData['alamat'] ?? '_'),
+                        const Divider(),
+                        const Text("Email:",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 5),
+                        Text(userData['email'] ?? '_'),
+                        const Divider(),
+                        const Text("ID:",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 5),
+                        Text(userData['id_pembeli']?.toString() ?? '_'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Tombol Logout
+                  ElevatedButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.clear(); // Menghapus semua data dari SharedPreferences
+
+                      // Arahkan ke halaman login setelah logout
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(), // Ganti dengan halaman login Anda
+                        ),
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Logout berhasil')),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: const Text("Logout", style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
