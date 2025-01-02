@@ -24,6 +24,15 @@ app.use("/barang", barangRouter);
 app.use("/keranjang", keranjangRouter);
 app.use("/pembayaran", pembayaranRouter);
 
+// (async () => {
+//     try {
+//         await sequelize.sync({ force: true }); // force: true akan membuat ulang tabel
+//         console.log('Database synchronized!');
+//     } catch (err) {
+//         console.error('Error synchronizing database:', err);
+//     }
+// })();
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -55,6 +55,7 @@ exports.loginPembeli = async (req, res) => {
             password: pembeli.password,
             foto: pembeli.foto || null,
             role: pembeli.role || null,
+            saldo: pembeli.saldo || null,
         }
         const token = jwt.sign({ dataPembeli }, process.env.JWT_SECRET, {
             expiresIn: '1h'

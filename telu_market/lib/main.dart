@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:telu_market/home.dart';
 import 'home.dart';
+import 'login.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: HomeScreen(),
+      home: LoginScreen(),
     );
   }
 }
