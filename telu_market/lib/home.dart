@@ -218,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       FadeInUp(
                         duration: const Duration(milliseconds: 1100),
                         child: const Text(
-                          "Nike",
+                          "10",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
