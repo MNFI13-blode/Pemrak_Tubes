@@ -27,6 +27,8 @@ class _ReceiptState extends State<ReceiptScreen> {
               child: Column(
                 children: [
                   Text("Id Pembayaran:"),
+                  Divider(),
+                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
