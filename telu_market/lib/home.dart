@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:telu_market/deskripsi_merchant.dart';
 import 'package:telu_market/deskripsi_produk.dart';
+import 'package:telu_market/receipt.dart';
 import 'profile_page.dart';
 import 'cart_page.dart';
 
@@ -246,7 +247,8 @@ class _HomeScreenState extends State<HomeScreen> {
               print("Navigasi ke Order");
               break;
             case 2:
-              print("Navigasi ke Receipt");
+              Navigator.push(context, 
+                  MaterialPageRoute(builder: (context) => ReceiptScreen()));
               break;
             case 3:
               Navigator.push(context,
