@@ -31,17 +31,14 @@ class _ReceiptState extends State<ReceiptScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Text(
-                        "Rincian Pesanan"
-                      ),
-                      Text(
-                        "Harga Satuan"
+                        "Id Barang"
                       ),
                       Text(
                         "Jumlah Barang"
                       ),
                       Text(
-                        "Metode Pembayaran"
-                      )
+                        "Harga Satuan"
+                      ),
                     ],
                   ),
                   Divider(),
