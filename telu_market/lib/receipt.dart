@@ -11,7 +11,7 @@ class _ReceiptState extends State<ReceiptScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Receipt", style: TextStyle(fontSize: 14),),
+        title: Text("Receipt", style: TextStyle(fontSize: 18),),
         leading: IconButton(
           onPressed: (){
             Navigator.push(context, 
