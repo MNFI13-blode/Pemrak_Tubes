@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:telu_market/receipt.dart';
+import 'package:http/http.dart' as http;
 import 'profile_page.dart';
+import 'receipt.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,9 +14,65 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
-  List<String> categories = ["All", "Pensil", "Pena"];
-  String selectedCategory = "All"; // Gunakan string untuk kategori yang dipilih
+  List<String> categories = ["All"];
+  String selectedCategory = "All";
   int currentIndex = 0;
+  List<dynamic> items = [];
+  List<dynamic> filteredItems = []; // List for filtered items based on search
+
+  @override
+  void initState() {
+    super.initState();
+    fetchItems();
+  }
+
+  Future<void> fetchItems() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://localhost:3000/barang'));
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          items = data;
+          filteredItems = data; // Initially show all items
+
+          // Ambil jenis barang unik dan tambahkan ke categories
+          Set<String> uniqueCategories = {"All"};
+          for (var item in data) {
+            if (item['jenis_barang'] != null) {
+              uniqueCategories.add(item['jenis_barang']);
+            }
+          }
+          categories = uniqueCategories.toList();
+        });
+      } else {
+        print("Failed to load items: ${response.statusCode}");
+      }
+    } catch (error) {
+      print("Error fetching items: $error");
+    }
+  }
+
+  void searchItems(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        // If the search query is empty, show all items
+        filteredItems = items;
+      } else {
+        // Filter items based on the query
+        filteredItems = items
+            .where((item) =>
+                item['nama_barang']
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                item['jenis_barang']
+                    .toLowerCase()
+                    .contains(query.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: InputBorder.none,
                 ),
                 style: const TextStyle(color: Colors.black),
+                onChanged: searchItems, // Call searchItems as user types
               )
             : const Text(
                 "Welcome, User",
@@ -40,14 +99,15 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               setState(() {
-                _isSearching = !_isSearching; // Toggle search bar visibility
+                _isSearching = !_isSearching;
                 if (!_isSearching) {
-                  _searchController.clear(); // Clear input when search is deactivated
+                  _searchController.clear();
+                  searchItems(""); // Show all items when search is cleared
                 }
               });
             },
             icon: Icon(
-              _isSearching ? Iconsax.close_circle : Iconsax.search_normal, // Toggle between search and close icon
+              _isSearching ? Iconsax.close_circle : Iconsax.search_normal,
               color: Colors.black,
             ),
           ),
@@ -64,8 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           padding: const EdgeInsets.all(20),
           child: Column(
-            children: <Widget>[
-              // Ganti bagian ListView biasa dengan ListView.builder
+            children: [
               Container(
                 height: 40,
                 child: ListView.builder(
@@ -75,8 +134,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedCategory =
-                              categories[index]; // Update kategori yang dipilih
+                          selectedCategory = categories[index];
+                          // Filter items by selected category
+                          if (selectedCategory == "All") {
+                            filteredItems = items;
+                          } else {
+                            filteredItems = items
+                                .where((item) =>
+                                    item['jenis_barang'] == selectedCategory)
+                                .toList();
+                          }
                         });
                       },
                       child: AnimatedContainer(
@@ -85,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           color: selectedCategory == categories[index]
-                              ? Colors.orange // Warna saat kategori dipilih
+                              ? Colors.orange
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -106,33 +173,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween, // Menjaga jarak antar card
-                children: [
-                  Expanded(
-                    child: FadeInUp(
-                      duration: Duration(milliseconds: 1500),
-                      child: makeItem(
-                        image: "lib/assets/login.png",
-                        context: context,
-                      ),
+              SizedBox(height: 20),
+              GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: filteredItems.length, // Use filteredItems here
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.75,
+                ),
+                itemBuilder: (context, index) {
+                  return FadeInUp(
+                    duration: Duration(milliseconds: 1500),
+                    child: makeItem(
+                      image: filteredItems[index]['foto'],
+                      name: filteredItems[index]['nama_barang'],
+                      price: filteredItems[index]['harga'].toString(),
+                      stock: filteredItems[index]['jumlah_barang'].toString(),
+                      context: context,
                     ),
-                  ),
-                  SizedBox(width: 10), // Memberikan jarak antar card
-                  Expanded(
-                    child: FadeInUp(
-                      duration: Duration(milliseconds: 1500),
-                      child: makeItem(
-                        image: "lib/assets/login.png",
-                        context: context,
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ],
           ),
@@ -147,25 +210,31 @@ class _HomeScreenState extends State<HomeScreen> {
         showUnselectedLabels: true,
         onTap: (int index) {
           setState(() {
-            currentIndex = index; // Update indeks saat item di-tap
+            currentIndex = index;
           });
 
-          // Aksi berdasarkan indeks
           switch (index) {
             case 0:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
+              // Menggunakan Navigator.pushReplacement untuk mengganti halaman tanpa back button
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
               break;
             case 1:
               print("Navigasi ke Order");
               break;
             case 2:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ReceiptScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReceiptScreen()),
+              );
               break;
             case 3:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+              );
               break;
           }
         },
@@ -191,22 +260,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget makeItem({required String image, BuildContext? context}) {
+  Widget makeItem({
+    required String? image,
+    required String name,
+    required String price,
+    required String stock,
+    BuildContext? context,
+  }) {
     return GestureDetector(
       child: Container(
         width: 240,
-        height: 295,
+        height: 255,
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Colors.red,
+          color: Colors.lightGreenAccent,
           boxShadow: [
             BoxShadow(
               color: Colors.grey.shade400,
               blurRadius: 10,
               offset: const Offset(0, 10),
-            )
+            ),
           ],
         ),
         child: Column(
@@ -214,43 +289,65 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                image,
+              child: Container(
                 height: 140,
                 width: double.infinity,
-                fit: BoxFit.cover,
+                color: Colors.grey[200],
+                child: image != null && image.isNotEmpty
+                    ? Image.network(
+                        image,
+                        height: 140,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 60,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          size: 60,
+                          color: Colors.grey,
+                        ),
+                      ),
               ),
             ),
-            const SizedBox(height: 8), // Reduced space between image and name
+            const SizedBox(height: 8),
             FadeInUp(
               duration: const Duration(milliseconds: 1000),
-              child: const Text(
-                "Sneakers",
-                style: TextStyle(
+              child: Text(
+                name,
+                style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: 15,
                 ),
               ),
             ),
-            const SizedBox(height: 3), // Reduced space between name and stock
+            const SizedBox(height: 3),
             FadeInUp(
               duration: const Duration(milliseconds: 1100),
-              child: const Text(
-                "Stock: 10",
-                style: TextStyle(
+              child: Text(
+                "Stock: $stock",
+                style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: 15,
                 ),
               ),
             ),
-            const SizedBox(height: 3), // Reduced space between stock and price
+            const SizedBox(height: 3),
             FadeInUp(
               duration: const Duration(milliseconds: 1200),
-              child: const Text(
-                "100\$",
-                style: TextStyle(
+              child: Text(
+                price,
+                style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: 15,
                 ),
               ),
             ),
@@ -266,12 +363,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text(
-                    "Tambahkan",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
+                  child: const Icon(
+                    Iconsax.shopping_cart,
+                    color: Colors.white,
+                    size: 20,
                   ),
                 ),
               ),
