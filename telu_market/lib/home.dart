@@ -10,6 +10,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
   List<String> categories = ["All", "Pensil", "Pena"];
   String selectedCategory = "All"; // Gunakan string untuk kategori yang dipilih
   int currentIndex = 0;
@@ -20,27 +22,50 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: null,
-        title: Text(
-          "Welcome, User",
-          style: TextStyle(color: Colors.black, fontSize: 25),
-        ),
-        // brightness: Brightness.light,
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Search...',
+                  hintStyle: TextStyle(color: Colors.black),
+                  border: InputBorder.none,
+                ),
+                style: const TextStyle(color: Colors.black),
+              )
+            : const Text(
+                "Welcome, User",
+                style: TextStyle(color: Colors.black, fontSize: 25),
+              ),
         actions: <Widget>[
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching; // Toggle search bar visibility
+                if (!_isSearching) {
+                  _searchController.clear(); // Clear input when search is deactivated
+                }
+              });
+            },
             icon: Icon(
+              _isSearching ? Iconsax.close_circle : Iconsax.search_normal, // Toggle between search and close icon
+              color: Colors.black,
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
               Iconsax.shopping_cart,
               color: Colors.black,
             ),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: <Widget>[
-               // Ganti bagian ListView biasa dengan ListView.builder
+              // Ganti bagian ListView biasa dengan ListView.builder
               Container(
                 height: 40,
                 child: ListView.builder(
@@ -50,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedCategory = categories[index]; // Update kategori yang dipilih
+                          selectedCategory =
+                              categories[index]; // Update kategori yang dipilih
                         });
                       },
                       child: AnimatedContainer(
@@ -168,22 +194,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget makeItem({required String image, BuildContext? context}) {
     return GestureDetector(
       child: Container(
-        width: 220,
-        height: 200,
+        width: 240,
+        height: 295,
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.only(bottom: 20),
-        alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Colors.red,
-          image: DecorationImage(
-            image: AssetImage(image),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.red.withOpacity(0.3),
-              BlendMode.darken,
-            ),
-          ),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.shade400,
@@ -194,81 +211,71 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      FadeInUp(
-                        duration: const Duration(milliseconds: 1000),
-                        child: const Text(
-                          "Sneakers",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20, // Font lebih kecil
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      FadeInUp(
-                        duration: const Duration(milliseconds: 1100),
-                        child: const Text(
-                          "10",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                image,
+                height: 140,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
+            const SizedBox(height: 8), // Reduced space between image and name
+            FadeInUp(
+              duration: const Duration(milliseconds: 1000),
+              child: const Text(
+                "Sneakers",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            const SizedBox(height: 3), // Reduced space between name and stock
+            FadeInUp(
+              duration: const Duration(milliseconds: 1100),
+              child: const Text(
+                "Stock: 10",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            const SizedBox(height: 3), // Reduced space between stock and price
             FadeInUp(
               duration: const Duration(milliseconds: 1200),
               child: const Text(
                 "100\$",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            // Menambahkan tombol "Tambah ke Keranjang"
-            FadeInUp(
+            Align(
+              alignment: Alignment.bottomRight,
+              child: FadeInUp(
                 duration: const Duration(milliseconds: 1300),
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Aksi untuk menambahkan ke keranjang
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange, // Warna tombol
+                    backgroundColor: Colors.orange,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 15), // Menambah padding horizontal
                   ),
-                  child: Text(
+                  child: const Text(
                     "Tambahkan",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize:
-                          14, // Mengatur ukuran font lebih kecil agar pas dalam tombol
+                      fontSize: 14,
                     ),
-                    textAlign: TextAlign.center, // Menjaga teks tetap di tengah
-                    overflow: TextOverflow
-                        .ellipsis, // Menghindari teks keluar dari tombol jika terlalu panjang
                   ),
-                )),
+                ),
+              ),
+            ),
           ],
         ),
       ),
