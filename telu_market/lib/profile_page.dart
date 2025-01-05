@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'authservice/authService.dart';
 import 'home.dart';
-import 'login.dart'; // Ganti dengan path halaman login Anda
+import 'login.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -25,12 +25,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<Map<String, dynamic>?> fetchUserData() async {
     final userData = await getUserData();
     return userData;
-    //return {
-    //'username': 'Andy',
-    //'alamat': 'Bandung',
-    //'email': 'andy@example.com',
-    //'id_pembeli': 12345,
-  //};
   }
 
   @override
@@ -55,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
       ),
-      body: FutureBuilder<Map<String, dynamic>?>(
+      body: FutureBuilder<Map<String, dynamic>?> (
         future: fetchUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -73,6 +67,8 @@ class _ProfilePageState extends State<ProfilePage> {
           }
 
           final userData = snapshot.data!;
+          final saldo = userData['saldo'] ?? 0;
+
           return SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.all(16.0),
@@ -90,23 +86,47 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditProfilePage(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditProfilePage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        child: const Text("Edit Profile",
+                            style: TextStyle(color: Colors.black)),
                       ),
-                    ),
-                    child: const Text("Edit Profile",
-                        style: TextStyle(color: Colors.black)),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddSaldoPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: const Text("Tambah Saldo",
+                            style: TextStyle(color: Colors.black)),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   Container(
@@ -147,6 +167,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 5),
                         Text(userData['id_pembeli']?.toString() ?? '_'),
                         const Divider(),
+                        const Text("Saldo:",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 5),
+                        Text(userData['saldo']?.toString() ?? '_'),
+                        const Divider(),
                         const Text("Saldo :",
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 5),
@@ -155,17 +180,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Tombol Logout
                   ElevatedButton(
                     onPressed: () async {
                       final prefs = await SharedPreferences.getInstance();
-                      await prefs.clear(); // Menghapus semua data dari SharedPreferences
+                      await prefs.clear();
 
-                      // Arahkan ke halaman login setelah logout
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginScreen(), // Ganti dengan halaman login Anda
+                          builder: (context) => LoginScreen(),
                         ),
                       );
 
@@ -190,6 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -433,3 +457,88 @@ class _EditProfilePageState extends State<EditProfilePage> {
             );
   }
 }
+
+class AddSaldoPage extends StatefulWidget {
+  @override
+  _AddSaldoPageState createState() => _AddSaldoPageState();
+}
+
+class _AddSaldoPageState extends State<AddSaldoPage> {
+  int _selectedAmount = 0;
+
+  Future<void> _saveSaldo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = jsonDecode(prefs.getString('userData') ?? '{}');
+
+    userData['saldo'] = (userData['saldo'] ?? 0) + _selectedAmount;
+    await prefs.setString('userData', jsonEncode(userData));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Saldo berhasil ditambahkan')),
+    );
+
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Tambah Saldo"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Pilih jumlah saldo:",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 2.5,
+              children: [
+                50000,
+                100000,
+                150000,
+                200000,
+              ].map((amount) {
+                return ChoiceChip(
+                  label: Text("Rp. $amount"),
+                  selected: _selectedAmount == amount,
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedAmount = selected ? amount : 0;
+                    });
+                  },
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: _selectedAmount > 0 ? _saveSaldo : null,
+                  child: const Text("Save"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
