@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:telu_market/home.dart';
-import 'home.dart';
 import 'login.dart';
 
 void main() {

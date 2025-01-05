@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'profile_page.dart';
 import 'cart_page.dart';
 import 'receipt.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = "All";
   int currentIndex = 0;
   List<dynamic> items = [];
-  List<dynamic> filteredItems = []; // List for filtered items based on search
+  List<dynamic> filteredItems = [];
 
   @override
   void initState() {
@@ -35,9 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
         List<dynamic> data = jsonDecode(response.body);
         setState(() {
           items = data;
-          filteredItems = data; // Initially show all items
-
-          // Ambil jenis barang unik dan tambahkan ke categories
+          filteredItems = data;
           Set<String> uniqueCategories = {"All"};
           for (var item in data) {
             if (item['jenis_barang'] != null) {
@@ -54,13 +53,53 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> saveUserData(String idPembeli) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('id_pembeli', idPembeli);
+  }
+
+  Future<void> addToCart(String idBarang, String jumlahBarang) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? idPembeli = prefs.getString('id_pembeli');
+      if (idPembeli == null) {
+        print("User not logged in");
+        return;
+      }
+
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/keranjang/tambah-barang'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "id_pembeli": idPembeli,
+          "id_barang": idBarang,
+          "jumlah_barang": int.parse(jumlahBarang),
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (responseData['message'].contains('ditambahkan') ||
+            responseData['message'].contains('diperbarui')) {
+          print("Barang berhasil ditambahkan atau diperbarui di keranjang");
+          await fetchItems(); // Refresh data stok barang
+        } else {
+          print("Respon tidak terduga: ${responseData['message']}");
+        }
+      } else {
+        print("Gagal menambahkan ke keranjang: ${responseData['message']}");
+      }
+    } catch (error) {
+      print("Error adding to cart: $error");
+    }
+  }
+
   void searchItems(String query) {
     setState(() {
       if (query.isEmpty) {
-        // If the search query is empty, show all items
         filteredItems = items;
       } else {
-        // Filter items based on the query
         filteredItems = items
             .where((item) =>
                 item['nama_barang']
@@ -90,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: InputBorder.none,
                 ),
                 style: const TextStyle(color: Colors.black),
-                onChanged: searchItems, // Call searchItems as user types
+                onChanged: searchItems,
               )
             : const Text(
                 "Welcome, User",
@@ -103,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _isSearching = !_isSearching;
                 if (!_isSearching) {
                   _searchController.clear();
-                  searchItems(""); // Show all items when search is cleared
+                  searchItems("");
                 }
               });
             },
@@ -136,7 +175,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         setState(() {
                           selectedCategory = categories[index];
-                          // Filter items by selected category
                           if (selectedCategory == "All") {
                             filteredItems = items;
                           } else {
@@ -174,12 +212,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               GridView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: filteredItems.length, // Use filteredItems here
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                itemCount: filteredItems.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
@@ -187,13 +225,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 itemBuilder: (context, index) {
                   return FadeInUp(
-                    duration: Duration(milliseconds: 1500),
+                    duration: const Duration(milliseconds: 1500),
                     child: makeItem(
                       image: filteredItems[index]['foto'],
                       name: filteredItems[index]['nama_barang'],
                       price: filteredItems[index]['harga'].toString(),
                       stock: filteredItems[index]['jumlah_barang'].toString(),
-                      context: context,
+                      index: index,
                     ),
                   );
                 },
@@ -216,7 +254,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
           switch (index) {
             case 0:
-              // Menggunakan Navigator.pushReplacement untuk mengganti halaman tanpa back button
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -268,6 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String price,
     required String stock,
     BuildContext? context,
+    required int index,
   }) {
     return GestureDetector(
       child: Container(
@@ -302,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: double.infinity,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return Center(
+                          return const Center(
                             child: Icon(
                               Icons.broken_image,
                               size: 60,
@@ -311,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       )
-                    : Center(
+                    : const Center(
                         child: Icon(
                           Icons.broken_image,
                           size: 60,
@@ -358,7 +396,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FadeInUp(
                 duration: const Duration(milliseconds: 1300),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    addToCart(
+                      filteredItems[index]['id_barang'].toString(),
+                      '1',
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     shape: RoundedRectangleBorder(

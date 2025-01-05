@@ -61,9 +61,10 @@ class Authservice {
 
 Future<void> saveUserData(Map<String, dynamic> data) async {
   final prefs = await SharedPreferences.getInstance();
-  String jsonData = jsonEncode(data); // Mengonversi Map ke JSON string
-  await prefs.setString('userData', jsonData);
-  print('Data Pembeli disimpan: $jsonData');
+  await prefs.setString('id_pembeli', data['id_pembeli'].toString());
+  //String jsonData = jsonEncode(data); // Mengonversi Map ke JSON string
+  await prefs.setString('userData', jsonEncode(data));
+  print('Data Pembeli disimpan: $data');
 }
 
 Future<Map<String, dynamic>> updateProfile(int id_pembeli, String username, String alamat, String email)async {
