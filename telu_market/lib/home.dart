@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'profile_page.dart';
+import 'cart_page.dart';
 import 'receipt.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -222,7 +223,8 @@ class _HomeScreenState extends State<HomeScreen> {
               );
               break;
             case 1:
-              print("Navigasi ke Order");
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => KeranjangPage()));
               break;
             case 2:
               Navigator.push(
