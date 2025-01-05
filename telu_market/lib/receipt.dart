@@ -9,7 +9,7 @@ class ReceiptScreen extends StatefulWidget{
 }
 
 class _ReceiptState extends State<ReceiptScreen> {
-  int currentIndex = 0;
+  int currentIndex = 2;
 
   @override
   Widget build(BuildContext context) {
