@@ -2,18 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: KeranjangPage(),
-//     );
-//   }
-// }
-
 class KeranjangPage extends StatefulWidget {
   @override
   _KeranjangPageState createState() => _KeranjangPageState();
@@ -39,15 +27,17 @@ class _KeranjangPageState extends State<KeranjangPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      print('Keranjang data: $data'); // Debugging log
       setState(() {
         keranjang = data['data'];
         for (var item in keranjang) {
-          selectedItems[item['id_barang']] = false;
+          selectedItems[item['id_barang']] = false; // Initialize checkbox state
         }
         isLoading = false;
       });
     } else {
-      print('Failed to load keranjang: ${response.body}');
+      print(
+          'Failed to load keranjang: ${response.statusCode} - ${response.body}');
       setState(() {
         keranjang = [];
         isLoading = false;
@@ -67,6 +57,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
       return;
     }
 
+    print('Selected Barang: $selectedBarang'); // Debugging log
+
     final url = Uri.parse('http://localhost:3000/pembayaran');
     final response = await http.post(
       url,
@@ -76,13 +68,16 @@ class _KeranjangPageState extends State<KeranjangPage> {
         'idPenjual': 1, // Ganti dengan ID penjual
         'barang': selectedBarang
             .map((item) => {
-                  'idBarang': item['id_barang'],
-                  'jumlah': item['jumlah_barang']
+                  'idBarang': item['id_barang'], // Ambil id_barang
+                  'jumlah': item['jumlah_barang'], // Ambil jumlah_barang
                 })
             .toList(),
         'metodePembayaran': 'Saldo',
       }),
     );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}'); // Debugging log
 
     if (response.statusCode == 201) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -140,22 +135,31 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   itemCount: keranjang.length,
                   itemBuilder: (context, index) {
                     final item = keranjang[index];
+                    final barang = item['Barang']; // Detail barang dari JSON
                     return Card(
                       child: Row(
                         children: [
-                          item['Barang']['foto'] != null
-                              ? Image.network(item['Barang']['foto'],
-                                  width: 50, height: 50)
+                          barang['foto'] != null
+                              ? Image.network(
+                                  'http://localhost:3000/uploads/${barang['foto']}',
+                                  width: 100,
+                                  height: 100,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(Icons.image_not_supported);
+                                  },
+                                )
                               : Icon(Icons.image_not_supported),
-                          SizedBox(width: 5),
+                          SizedBox(width: 15),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(item['Barang']['nama_barang'],
+                                Text(barang['nama_barang'],
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold)),
-                                Text('Harga: Rp ${item['Barang']['harga']}'),
+                                Text('Harga: Rp${barang['harga']}'),
+                                Text(
+                                    'Jumlah: ${item['jumlah_barang']}'), // Jumlah barang dalam keranjang
                               ],
                             ),
                           ),

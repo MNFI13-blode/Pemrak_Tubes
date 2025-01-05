@@ -33,13 +33,13 @@ async function createPembayaran(req, res) {
         });
       }
 
-      if (produk.stok < item.jumlah) {
+      if (produk.jumlah_barang < item.jumlah) {
         return res
           .status(400)
           .json({ message: `Stok barang ${produk.nama_barang} tidak cukup` });
       }
 
-      produk.stok -= item.jumlah;
+      produk.jumlah_barang -= item.jumlah;
       await produk.save({ transaction });
 
       totalHarga += produk.harga * item.jumlah;
