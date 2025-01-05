@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchItems();
   }
 
+  // Refresh Barang
   Future<void> fetchItems() async {
     try {
       final response =
@@ -53,11 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Ambil Id Pembeli
   Future<void> saveUserData(String idPembeli) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('id_pembeli', idPembeli);
   }
 
+  // Tambahkan barang ke keranjang
   Future<void> addToCart(String idBarang, String jumlahBarang) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -95,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Logika cari barang
   void searchItems(String query) {
     setState(() {
       if (query.isEmpty) {
@@ -121,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         leading: null,
         title: _isSearching
-            ? TextField(
+            ? TextField(// Apabila tombol search ditekan
                 controller: _searchController,
                 decoration: const InputDecoration(
                   hintText: 'Search...',
@@ -131,12 +135,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: const TextStyle(color: Colors.black),
                 onChanged: searchItems,
               )
-            : const Text(
+            : const Text(// Apabila tidak ditekan (Tampilan awal)
                 "Welcome, User",
                 style: TextStyle(color: Colors.black, fontSize: 25),
               ),
         actions: <Widget>[
-          IconButton(
+          IconButton(// Search Button
             onPressed: () {
               setState(() {
                 _isSearching = !_isSearching;
@@ -151,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black,
             ),
           ),
-          IconButton(
+          IconButton(// Unsearch Button
             onPressed: () {},
             icon: const Icon(
               Iconsax.shopping_cart,
@@ -171,8 +175,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
+                    return GestureDetector(//Kategori atau jenis barang
+                      onTap: () { 
                         setState(() {
                           selectedCategory = categories[index];
                           if (selectedCategory == "All") {
@@ -191,8 +195,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
                           color: selectedCategory == categories[index]
-                              ? Colors.orange
-                              : Colors.grey[200],
+                              ? Colors.orange //saat ditekan
+                              : Colors.grey[200],//saat tidak ditekan
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
@@ -202,8 +206,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                               color: selectedCategory == categories[index]
-                                  ? Colors.white
-                                  : Colors.black,
+                                  ? Colors.white //saat ditekan
+                                  : Colors.black, //saat tidak ditekan
                             ),
                           ),
                         ),
@@ -213,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              GridView.builder(
+              GridView.builder(//Kartu barang
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: filteredItems.length,
@@ -226,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   return FadeInUp(
                     duration: const Duration(milliseconds: 1500),
-                    child: makeItem(
+                    child: makeItem(// Komponen
                       image: filteredItems[index]['foto'],
                       name: filteredItems[index]['nama_barang'],
                       price: filteredItems[index]['harga'].toString(),
@@ -240,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(// Navbar
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
         selectedItemColor: Colors.orange,
@@ -299,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget makeItem({
+  Widget makeItem({// Buat kartu dan buttonnya
     required String? image,
     required String name,
     required String price,
