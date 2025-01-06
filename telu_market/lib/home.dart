@@ -125,7 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         leading: null,
         title: _isSearching
-            ? TextField(// Apabila tombol search ditekan
+            ? TextField(
+                // Apabila tombol search ditekan
                 controller: _searchController,
                 decoration: const InputDecoration(
                   hintText: 'Search...',
@@ -135,12 +136,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: const TextStyle(color: Colors.black),
                 onChanged: searchItems,
               )
-            : const Text(// Apabila tidak ditekan (Tampilan awal)
+            : const Text(
+                // Apabila tidak ditekan (Tampilan awal)
                 "Welcome, User",
                 style: TextStyle(color: Colors.black, fontSize: 25),
               ),
         actions: <Widget>[
-          IconButton(// Search Button
+          IconButton(
+            // Search Button
             onPressed: () {
               setState(() {
                 _isSearching = !_isSearching;
@@ -155,7 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black,
             ),
           ),
-          IconButton(// Unsearch Button
+          IconButton(
+            // Unsearch Button
             onPressed: () {},
             icon: const Icon(
               Iconsax.shopping_cart,
@@ -175,8 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(//Kategori atau jenis barang
-                      onTap: () { 
+                    return GestureDetector(
+                      //Kategori atau jenis barang
+                      onTap: () {
                         setState(() {
                           selectedCategory = categories[index];
                           if (selectedCategory == "All") {
@@ -196,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: selectedCategory == categories[index]
                               ? Colors.orange //saat ditekan
-                              : Colors.grey[200],//saat tidak ditekan
+                              : Colors.grey[200], //saat tidak ditekan
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
@@ -217,7 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              GridView.builder(//Kartu barang
+              GridView.builder(
+                //Kartu barang
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: filteredItems.length,
@@ -230,7 +236,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   return FadeInUp(
                     duration: const Duration(milliseconds: 1500),
-                    child: makeItem(// Komponen
+                    child: makeItem(
+                      // Komponen
                       image: filteredItems[index]['foto'],
                       name: filteredItems[index]['nama_barang'],
                       price: filteredItems[index]['harga'].toString(),
@@ -244,7 +251,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(// Navbar
+      bottomNavigationBar: BottomNavigationBar(
+        // Navbar
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
         selectedItemColor: Colors.orange,
@@ -303,7 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget makeItem({// Buat kartu dan buttonnya
+  Widget makeItem({
+    // Buat kartu dan buttonnya
     required String? image,
     required String name,
     required String price,

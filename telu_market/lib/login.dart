@@ -25,20 +25,20 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoginTrue = false;
 
   @override
-  void initState(){
-     super.initState();
+  void initState() {
+    super.initState();
     checkLoginStatus();
   }
 
-  void checkLoginStatus() async{
+  void checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
-    if(token != null){
+    if (token != null) {
       Navigator.pushReplacement(
-        context, 
+        context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
+      );
     }
   }
 
@@ -181,18 +181,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextButton(
                         onPressed: loginPembeli,
                         //() {
-                          // if (formKey.currentState!.validate()) {
-                          //   //Login method will be here
-                          //   loginPembeli();
-                          //   // Navigator.pushReplacement(
-                          //   //   context,
-                          //   //   MaterialPageRoute(
-                          //   //       builder: (context) =>
-                          //   //           HomeScreen()), // Ganti dengan HomeScreen
-                          //   // );
-                          //   //Now we have a response from our sqlite method
-                          //   //We are going to create a user
-                          // }
+                        // if (formKey.currentState!.validate()) {
+                        //   //Login method will be here
+                        //   loginPembeli();
+                        //   // Navigator.pushReplacement(
+                        //   //   context,
+                        //   //   MaterialPageRoute(
+                        //   //       builder: (context) =>
+                        //   //           HomeScreen()), // Ganti dengan HomeScreen
+                        //   // );
+                        //   //Now we have a response from our sqlite method
+                        //   //We are going to create a user
+                        // }
                         // },
                         child: const Text(
                           "LOGIN",
