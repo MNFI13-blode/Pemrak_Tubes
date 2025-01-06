@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class KeranjangPage extends StatefulWidget {
   @override
   _KeranjangPageState createState() => _KeranjangPageState();
@@ -11,18 +13,39 @@ class _KeranjangPageState extends State<KeranjangPage> {
   List<dynamic> keranjang = [];
   Map<int, bool> selectedItems = {};
   bool isLoading = false;
+  int? idPembeli; // Menyimpan id_pembeli
 
   @override
   void initState() {
     super.initState();
     fetchKeranjang();
+    _getUserId(); // Mengambil id_pembeli saat halaman dimuat
   }
 
+// Fungsi untuk mengambil id_pembeli dari SharedPreferences
+  Future<void> _getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = prefs.getString('userData');
+
+    if (userData != null) {
+      final data = jsonDecode(userData);
+      setState(() {
+        idPembeli = data['id_pembeli']; // Menyimpan id_pembeli
+      });
+      fetchKeranjang(); // Memanggil fetchKeranjang setelah id_pembeli diambil
+    }
+  }
+
+  // Fungsi untuk mengambil data keranjang berdasarkan id_pembeli
   Future<void> fetchKeranjang() async {
+    if (idPembeli == null) return; // Pastikan id_pembeli sudah tersedia
+
     setState(() {
       isLoading = true;
     });
-    final url = Uri.parse('http://localhost:3000/keranjang/1');
+
+    final url = Uri.parse(
+        'http://localhost:3000/keranjang/$idPembeli'); // Ganti dengan id_pembeli dinamis
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -45,6 +68,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
     }
   }
 
+  // Fungsi untuk memproses pembayaran
   Future<void> prosesPembayaran() async {
     final selectedBarang = keranjang
         .where((item) => selectedItems[item['id_barang']] == true)
@@ -64,7 +88,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        'idPembeli': 1, // Ganti dengan ID pembeli
+        'idPembeli': idPembeli, // Menggunakan idPembeli yang dinamis
         'idPenjual': 1, // Ganti dengan ID penjual
         'barang': selectedBarang
             .map((item) => {
