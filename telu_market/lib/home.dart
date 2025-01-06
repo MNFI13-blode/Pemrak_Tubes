@@ -21,11 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
   List<dynamic> items = [];
   List<dynamic> filteredItems = [];
+  String? username12;
 
   @override
   void initState() {
     super.initState();
     fetchItems();
+    getUserData();
+    fetchUserData();
   }
 
   // Refresh Barang
@@ -54,10 +57,41 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  //ambil useFetch
+  Future<Map<String, dynamic>?> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('userData');
+
+    if (jsonString != null) {
+      return jsonDecode(jsonString);
+    }
+    return null;
+  }
+
+  //Fetch user
+  Future<Map<String, dynamic>?> fetchUserData1() async {
+    final userData = await getUserData();
+    return userData;
+  }
+
+  Future<void> fetchUserData() async {
+    final userData = await getUserData();
+    if (userData != null) {
+      setState(() {
+        username12 = userData['username'];
+      });
+    } else {
+      setState(() {
+        username12 = 'Kontol';
+      });
+    }
+  }
+
   // Ambil Id Pembeli
-  Future<void> saveUserData(String idPembeli) async {
+  Future<void> saveUserData(String idPembeli, String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('id_pembeli', idPembeli);
+    // await prefs.setString('username', username);
   }
 
   // Tambahkan barang ke keranjang
@@ -126,7 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: null,
         title: _isSearching
             ? TextField(
-                // Apabila tombol search ditekan
                 controller: _searchController,
                 decoration: const InputDecoration(
                   hintText: 'Search...',
@@ -136,14 +169,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: const TextStyle(color: Colors.black),
                 onChanged: searchItems,
               )
-            : const Text(
-                // Apabila tidak ditekan (Tampilan awal)
-                "Welcome, User",
+            : Text(
+                "Welcomes, ${username12 ?? '_'}",
                 style: TextStyle(color: Colors.black, fontSize: 25),
               ),
         actions: <Widget>[
           IconButton(
-            // Search Button
             onPressed: () {
               setState(() {
                 _isSearching = !_isSearching;
@@ -159,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           IconButton(
-            // Unsearch Button
             onPressed: () {},
             icon: const Icon(
               Iconsax.shopping_cart,
@@ -168,91 +198,109 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Container(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      //Kategori atau jenis barang
-                      onTap: () {
-                        setState(() {
-                          selectedCategory = categories[index];
-                          if (selectedCategory == "All") {
-                            filteredItems = items;
-                          } else {
-                            filteredItems = items
-                                .where((item) =>
-                                    item['jenis_barang'] == selectedCategory)
-                                .toList();
-                          }
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        margin: EdgeInsets.only(right: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: selectedCategory == categories[index]
-                              ? Colors.orange //saat ditekan
-                              : Colors.grey[200], //saat tidak ditekan
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Center(
-                          child: Text(
-                            categories[index],
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: fetchUserData1(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(
+              child: Text('No profile data available'),
+            );
+          }
+
+          return SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Container(
+                    height: 40,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedCategory = categories[index];
+                              if (selectedCategory == "All") {
+                                filteredItems = items;
+                              } else {
+                                filteredItems = items
+                                    .where((item) =>
+                                        item['jenis_barang'] ==
+                                        selectedCategory)
+                                    .toList();
+                              }
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            margin: EdgeInsets.only(right: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
                               color: selectedCategory == categories[index]
-                                  ? Colors.white //saat ditekan
-                                  : Colors.black, //saat tidak ditekan
+                                  ? Colors.orange
+                                  : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(
+                              child: Text(
+                                categories[index],
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: selectedCategory == categories[index]
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              GridView.builder(
-                //Kartu barang
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: filteredItems.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.75,
-                ),
-                itemBuilder: (context, index) {
-                  return FadeInUp(
-                    duration: const Duration(milliseconds: 1500),
-                    child: makeItem(
-                      // Komponen
-                      image: filteredItems[index]['foto'],
-                      name: filteredItems[index]['nama_barang'],
-                      price: filteredItems[index]['harga'].toString(),
-                      stock: filteredItems[index]['jumlah_barang'].toString(),
-                      index: index,
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: 20),
+                  GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: filteredItems.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.75,
+                    ),
+                    itemBuilder: (context, index) {
+                      return FadeInUp(
+                        duration: const Duration(milliseconds: 1500),
+                        child: makeItem(
+                          image: filteredItems[index]['foto'],
+                          name: filteredItems[index]['nama_barang'],
+                          price: filteredItems[index]['harga'].toString(),
+                          stock:
+                              filteredItems[index]['jumlah_barang'].toString(),
+                          index: index,
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        // Navbar
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
         selectedItemColor: Colors.orange,

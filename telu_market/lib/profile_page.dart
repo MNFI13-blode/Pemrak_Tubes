@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
       ),
-      body: FutureBuilder<Map<String, dynamic>?> (
+      body: FutureBuilder<Map<String, dynamic>?>(
         future: fetchUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -171,11 +171,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         const SizedBox(height: 5),
                         Text(userData['saldo']?.toString() ?? '_'),
-                        const Divider(),
-                        const Text("Saldo :",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 5),
-                        Text(userData['saldo']?.toString() ?? '_'),
                       ],
                     ),
                   ),
@@ -202,7 +197,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: const Text("Logout", style: TextStyle(color: Colors.white)),
+                    child: const Text("Logout",
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -213,7 +209,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -277,10 +272,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Update Berhasil")),
         );
-         Future.delayed(const Duration(seconds: 2),(){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  ProfilePage()),
-      );
-    });
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage()),
+          );
+        });
       }
     } catch (e) {
       print('Failed to update profile: $e');
@@ -289,7 +286,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
           title: const Text("Edit Profile"),
@@ -452,9 +449,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
               );
-            })
- 
-            );
+            }));
   }
 }
 
@@ -541,4 +536,3 @@ class _AddSaldoPageState extends State<AddSaldoPage> {
     );
   }
 }
-
