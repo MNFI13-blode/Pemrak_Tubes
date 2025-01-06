@@ -55,7 +55,7 @@ exports.loginPembeli = async (req, res) => {
             password: pembeli.password,
             foto: pembeli.foto || null,
             role: pembeli.role || null,
-            saldo: pembeli.saldo || null,
+            saldo: pembeli.saldo || 0,
         }
         const token = jwt.sign({ dataPembeli }, process.env.JWT_SECRET, {
             expiresIn: '1h'
@@ -69,35 +69,51 @@ exports.loginPembeli = async (req, res) => {
 
 //update pembeli
 
-exports.updatetPembeli  = async(req, res) =>{
-try{
-    const{id_pembeli,username,email,alamat} = req.body;
-    
-    if(!id_pembeli){
-       return res.status(400).json({status:'error', message:'ID pembeli tidak ditemukan'})
+exports.updatetPembeli = async (req, res) => {
+    try {
+        const { id_pembeli, username, email, alamat, saldo, isIncrement } = req.body;
+
+        if (!id_pembeli) {
+            return res.status(400).json({ status: 'error', message: 'ID pembeli tidak ditemukan' });
+        }
+
+        const pembeli = await Pembeli.findOne({ where: { id_pembeli } });
+
+        if (!pembeli) {
+            return res.status(404).json({ status: 'error', message: 'Pengguna tidak ditemukan' });
+        }
+
+        // Validasi saldo dan update
+        if (saldo !== undefined) {
+            if (isNaN(saldo) || saldo < 0) {
+                return res.status(400).json({ status: 'error', message: 'Saldo harus berupa angka positif' });
+            }
+
+            if (saldo > 1_000_000_000) { // Batas maksimal saldo
+                return res.status(400).json({ status: 'error', message: 'Saldo terlalu besar' });
+            }
+
+            if (isIncrement) {
+                pembeli.saldo += saldo; // Tambahkan saldo
+            } else {
+                pembeli.saldo = saldo; // Ganti saldo
+            }
+        }
+
+        // Update data pembeli
+        const updatedPembeli = await pembeli.update({
+            username: username || pembeli.username,
+            email: email || pembeli.email,
+            alamat: alamat || pembeli.alamat,
+            saldo: pembeli.saldo,
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Profil berhasil diperbarui',
+            data: updatedPembeli,
+        });
+    } catch (error) {
+        res.status(400).json({ status: 'error', message: error.message });
     }
-
-    const pembeli = await Pembeli.findOne({where:{id_pembeli }})
-
-    if (!pembeli) {
-        return res.status(404).json({ status: 'error', message: 'Pengguna tidak ditemukan' });
-    }
-
-    const updatedPembeli = await pembeli.update({
-        username: username || pembeli.username,
-        email: email || pembeli.email,
-        alamat: alamat || pembeli.alamat,
-    });
-
-    res.status(200).json({
-        status: 'success',
-        message: 'Profil berhasil diperbarui',
-        data: updatedPembeli
-
-    })
-
-}catch{
-    res.status(400).json({ status: 'error', message: error.message });
-}
-
-}
+};
