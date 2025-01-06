@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
+=======
+import 'login.dart';
+import 'receipt.dart';
+import 'authservice/notifi_service.dart';
+>>>>>>> Stashed changes
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
   runApp(MyApp());
 }
 
@@ -8,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+<<<<<<< Updated upstream
       debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     );
@@ -547,6 +556,13 @@ class MerchantPage extends StatelessWidget {
           );
         },
       ),
+=======
+      title: 'Tel-U Market',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+      ),
+      home: ReceiptScreen(),
+>>>>>>> Stashed changes
     );
   }
 }

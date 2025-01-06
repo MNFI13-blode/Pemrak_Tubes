@@ -1,3 +1,16 @@
+buildscript {
+    ext.kotlin_version = '1.9.0'  // Ubah versi Kotlin ke 1.9.0
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:7.0.4"  // Pastikan versi gradle juga sesuai
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+
 allprojects {
     repositories {
         google()
